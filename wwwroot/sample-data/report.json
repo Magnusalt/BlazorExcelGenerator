@@ -1,0 +1,51 @@
+[
+  {
+    "ReportDate": "2020-09-14T11:22:08.0594553+02:00",
+    "FactoryName": "Torslanda",
+    "UnitsProduced": 803,
+    "SampleTimeHours": 24,
+    "Incidents": "None"
+  },
+  {
+    "ReportDate": "2020-09-14T11:22:08.0635582+02:00",
+    "FactoryName": "Gent",
+    "UnitsProduced": 36,
+    "SampleTimeHours": 24,
+    "Incidents": "Replaced paint robot 333"
+  },
+  {
+    "ReportDate": "2020-09-14T11:27:08.0635582+06:00",
+    "FactoryName": "Shah Alam Plant",
+    "UnitsProduced": 721,
+    "SampleTimeHours": 24,
+    "Incidents": "None"
+  },
+  {
+    "ReportDate": "2020-09-14T11:29:08.0635582+09:00",
+    "FactoryName": "Chengdu",
+    "UnitsProduced": 649,
+    "SampleTimeHours": 24,
+    "Incidents": "None"
+  },
+  {
+    "ReportDate": "2020-09-14T11:21:08.0635582+09:00",
+    "FactoryName": "Daqing",
+    "UnitsProduced": 429,
+    "SampleTimeHours": 24,
+    "Incidents": "None"
+  },
+  {
+    "ReportDate": "2020-09-14T11:21:08.0635582+09:00",
+    "FactoryName": "Luqiao",
+    "UnitsProduced": 3,
+    "SampleTimeHours": 24,
+    "Incidents": "Power outage"
+  },
+  {
+    "ReportDate": "2020-09-14T11:21:08.0635582-07:00",
+    "FactoryName": "South Carolina",
+    "UnitsProduced": 202,
+    "SampleTimeHours": 24,
+    "Incidents": "None"
+  }
+]

@@ -1,0 +1,103 @@
+﻿@inject IJSRuntime JSRuntime
+
+<button class="btn btn-primary" @onclick="OnClickDownloadButton">
+    Download
+</button>
+@code {
+    private string[] _columns = new[] { "A", "B", "C", "D", "E" };
+
+    [Parameter]
+    public IList<Result> Results { get; set; }
+
+    private async Task OnClickDownloadButton()
+    {
+        using var p = new ExcelPackage();
+        var workSheet = p.Workbook.Worksheets.Add("ReportSheet");
+        workSheet.DefaultColWidth = 25;
+
+        InsertHeading(workSheet);
+
+        var index = 2;
+        foreach (var r in Results)
+        {
+            for (var i = 0; i < _columns.Length; i++)
+            {
+                var cell = workSheet.Cells[$"{_columns[i]}{index}"];
+                switch (i)
+                {
+                    case 0:
+                        cell.Value = r.ReportDate;
+                        cell.Style.Numberformat.Format = "YYYY-MM-DD hh:mm";
+                        break;
+                    case 1:
+                        cell.Value = r.FactoryName;
+                        break;
+                    case 2:
+                        cell.Value = r.UnitsProduced;
+                        break;
+                    case 3:
+                        cell.Value = r.HourlyProductionRate;
+                        cell.Style.Numberformat.Format = "0.00";
+                        break;
+                    case 4:
+                        cell.Value = r.Incidents;
+                        if (r.Incidents != "None")
+                        {
+                            cell.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                            cell.Style.Fill.BackgroundColor.SetColor(10, 220, 20, 50);
+                        }
+                        break;
+                    default:
+                        cell.Value = "Unknown";
+                        break;
+                };
+            }
+
+            index++;
+        }
+
+        using var range = workSheet.Cells[index, 1, index, 5];
+
+        range.Style.Border.Top.Style = ExcelBorderStyle.Thick;
+
+
+        workSheet.Cells[$"C{index}"].Formula = $"SUM(C2:C{index-1})";
+        var averageRateCell = workSheet.Cells[$"D{index}"];
+        averageRateCell.Formula = $"C{index}/24";
+        averageRateCell.Style.Numberformat.Format = "0.00";
+
+        using var memStream = new System.IO.MemoryStream();
+
+        await p.SaveAsAsync(memStream);
+
+        var excelFile = memStream.ToArray();
+        var fileName = $"Report_{DateTime.Now}.xlsx";
+        await JSRuntime.InvokeVoidAsync(
+          "downloadFromByteArray",
+          new
+          {
+              ByteArray = excelFile,
+              FileName = fileName,
+              ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+          });
+    }
+
+    private void InsertHeading(ExcelWorksheet worksheet)
+    {
+        var headers = new Dictionary<string, string>
+        {
+            ["A1"] = "Report Date",
+            ["B1"] = "Factory",
+            ["C1"] = "Cars Produced",
+            ["D1"] = "Production rate (cars/hour)",
+            ["E1"] = "Incidents"
+        };
+
+        foreach (var (k, v) in headers)
+        {
+            var cell = worksheet.Cells[k];
+            cell.Style.Border.Bottom.Style = ExcelBorderStyle.Thick;
+            cell.Value = v;
+        }
+    }
+}

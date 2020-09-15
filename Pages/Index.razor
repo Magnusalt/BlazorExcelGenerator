@@ -1,0 +1,42 @@
+﻿@page "/"
+@inject HttpClient httpClient
+
+
+<h1>Report</h1>
+@if (Results != null)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Report Date</th>
+                <th scope="col">Factory</th>
+                <th scope="col">Cars produced last 24 hours</th>
+                <th scope="col">Production rate (cars/hour)</th>
+                <th scope="col">Incidents</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Results)
+            {
+                <tr>
+                    <td>@item.ReportDate</td>
+                    <td>@item.FactoryName</td>
+                    <td>@item.UnitsProduced</td>
+                    <td>@($"{item.HourlyProductionRate:F2}")</td>
+                    <td class="@(item.Incidents != "None" ? "bg-danger" : "" )">@item.Incidents</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <ExcelDownload Results="@Results"/>
+}
+
+@code{
+    private IList<Result> Results;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Results = await httpClient.GetFromJsonAsync<IList<Result>>("sample-data/report.json");
+    }
+}
